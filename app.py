@@ -138,7 +138,7 @@ def get_current_file():
 @app.route('/process_passage', methods=['POST'])
 def process_passage():
 
-    print("Entered process function @@@@@@@@@@@@@@@@@@@@@@@@")
+    # print("Entered process function @@@@@@@@@@@@@@@@@@@@@@@@")
 
     # Update with the actual file extension
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], 'current_file')
@@ -149,7 +149,7 @@ def process_passage():
 
     if not (txt_file_exists or docx_file_exists):
         flash('No valid file found')
-        print("return from redirect#############################@@@@@")
+        # print("return from redirect#############################@@@@@")
         return redirect(url_for('index'))
 
     # Choose the first available file (either .txt or .docx)
@@ -167,26 +167,26 @@ def process_passage():
         initial_text = extract_text_from_txt(file_path)
     else:
         flash('Unsupported file type')
-        print("Returned with the extension: @" + extension + "@")
+        # print("Returned with the extension: @" + extension + "@")
         return redirect(url_for('index'))
 
     # Check if the form fields are available in the request
     textfield_inputs = []
-    print ("LEN OF REQUEST FIELD IS: @" + str(len(request.form)) + "@")
+    # print ("LEN OF REQUEST FIELD IS: @" + str(len(request.form)) + "@")
 
-    for i in range(1, len(request.form)):    # inainte era  len(request.form) + 1
+    for i in range(1, len(request.form)):
         key = f'textfield_{i}'
         if key in request.form:
             textfield_inputs.append(request.form[key])
         else:
             flash(f'Missing form field: {key}')
-            print("return from redirect#############################@@@@@")
+            # print("return from redirect#############################@@@@@")
             return redirect(url_for('index'))
 
     # Create newText by replacing ____________ with textfield_inputs
     new_text = re.sub(r'_+', '{}', initial_text).format(*textfield_inputs)
 
-    print("@@@@@@" + new_text + "@@@@@@@@")
+    # print("@@@@@@" + new_text + "@@@@@@@@")
 
     pdf_filename = generate_filled_pdf(new_text, file_path, extension)
     return send_file(pdf_filename, as_attachment=True, download_name='generated_file.pdf')
